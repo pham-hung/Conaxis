@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BoundaryCondition</class>
+ <widget class="QDialog" name="BoundaryCondition">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>568</width>
+    <height>231</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Create Boundary Condition</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Boundary condition #</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Load Type</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Constant Value (or Start Value)      </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>End Value</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Data file (Value ~ time function)</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLineEdit" name="indexLine"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="nameLine"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="typeCombo">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Fix X- Displacement (Horizontal)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Fix Y- Displacement (Vertical)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Fix Pore Pressure</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Line Pressure: Y- Direction</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Line Pressure: X- Direction</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Point Load X</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Point Load Y</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Excharge Rate</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="loadTypeCombo">
+         <item>
+          <property name="text">
+           <string>Constant</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Ramp</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Time dependence (from data file)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="t0Line"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="t1Line"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="curveFileNameLine"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="okButton">
+       <property name="text">
+        <string>Add/Modify</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="listButton">
+       <property name="text">
+        <string>List Boundary Condition</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton">
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

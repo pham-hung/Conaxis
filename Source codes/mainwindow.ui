@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1368</width>
+    <height>768</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>240</y>
+      <width>160</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="mainLayout"/>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1368</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <widget class="QMenu" name="menuProject_Setting">
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>File/ Module</string>
+    </property>
+    <addaction name="CRSTest"/>
+    <addaction name="PVDbackAnalysis"/>
+    <addaction name="separator"/>
+    <addaction name="setWorkingFolder"/>
+    <addaction name="projectSetting"/>
+    <addaction name="separator"/>
+    <addaction name="saveData"/>
+    <addaction name="saveAs"/>
+    <addaction name="openFile"/>
+    <addaction name="exit"/>
+   </widget>
+   <widget class="QMenu" name="menuGeometry">
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Geometry</string>
+    </property>
+    <addaction name="actionInput_Geometry"/>
+    <addaction name="separator"/>
+    <addaction name="loadMeshFile"/>
+    <addaction name="nodeList"/>
+   </widget>
+   <widget class="QMenu" name="menuMaterial">
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Material</string>
+    </property>
+    <addaction name="createMat"/>
+   </widget>
+   <widget class="QMenu" name="menuLoad_Stage">
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Load and Stage</string>
+    </property>
+    <addaction name="addStage"/>
+    <addaction name="listLoadStage"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuBoundary_Conditions">
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Boundary Conditions</string>
+    </property>
+    <addaction name="addBoundary"/>
+    <addaction name="assignBoundary"/>
+   </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Solve</string>
+    </property>
+    <addaction name="solutionControl"/>
+    <addaction name="watchList"/>
+    <addaction name="separator"/>
+    <addaction name="runAnalysis"/>
+   </widget>
+   <widget class="QMenu" name="menuPlot_Control">
+    <property name="title">
+     <string>Plot Control</string>
+    </property>
+    <addaction name="loadResults"/>
+    <addaction name="animationSetting"/>
+    <addaction name="scaleSetting"/>
+   </widget>
+   <addaction name="menuProject_Setting"/>
+   <addaction name="menuGeometry"/>
+   <addaction name="menuMaterial"/>
+   <addaction name="menuLoad_Stage"/>
+   <addaction name="menuBoundary_Conditions"/>
+   <addaction name="menuRun"/>
+   <addaction name="menuPlot_Control"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="font">
+    <font>
+     <family>Tahoma</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="openFile"/>
+   <addaction name="saveData"/>
+   <addaction name="loadMeshFile"/>
+   <addaction name="createMat"/>
+   <addaction name="addBoundary"/>
+   <addaction name="addStage"/>
+   <addaction name="assignBoundary"/>
+   <addaction name="runAnalysis"/>
+   <addaction name="scaleSetting"/>
+   <addaction name="animationSetting"/>
+  </widget>
+  <action name="CRSTest">
+   <property name="text">
+    <string>Constant strain rate test module</string>
+   </property>
+  </action>
+  <action name="PVDbackAnalysis">
+   <property name="text">
+    <string>Vimoke Concept for PVD analysis module</string>
+   </property>
+  </action>
+  <action name="projectSetting">
+   <property name="text">
+    <string>Problem Setting</string>
+   </property>
+  </action>
+  <action name="saveData">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/imgs/Icon/save.ico</normaloff>:/imgs/Icon/save.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Save Data</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="openFile">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/imgs/Icon/open.ico</normaloff>:/imgs/Icon/open.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="exit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="loadMeshFile">
+   <property name="icon">
+    <iconset theme=":/imgs/Icon/Mesh.ico" resource="resources.qrc">
+     <normaloff>:/imgs/Icon/Mesh.ico</normaloff>
+     <normalon>:/imgs/Icon/Mesh.ico</normalon>:/imgs/Icon/Mesh.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Load mesh file</string>
+   </property>
+  </action>
+  <action name="createMat">
+   <property name="icon">
+    <iconset theme=":/imgs/Icon/material.ico">
+     <normaloff>Icon/material.ico</normaloff>
+     <normalon>:/imgs/Icon/material.ico</normalon>
+     <disabledoff>:/imgs/Icon/material.ico</disabledoff>
+     <disabledon>:/imgs/Icon/material.ico</disabledon>Icon/material.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Create Material</string>
+   </property>
+  </action>
+  <action name="addStage">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icon/STAGE.ico</normaloff>
+     <normalon>:/imgs/Icon/STAGE.ico</normalon>
+     <disabledoff>:/imgs/Icon/STAGE.ico</disabledoff>
+     <disabledon>:/imgs/Icon/STAGE.ico</disabledon>
+     <activeoff>:/imgs/Icon/STAGE.ico</activeoff>Icon/STAGE.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Add Analysis Stage</string>
+   </property>
+  </action>
+  <action name="listLoadStage">
+   <property name="text">
+    <string>List Load Stage</string>
+   </property>
+  </action>
+  <action name="actionLine_Load">
+   <property name="text">
+    <string>Line Load</string>
+   </property>
+  </action>
+  <action name="actionPoint_Load">
+   <property name="text">
+    <string>Point Load</string>
+   </property>
+  </action>
+  <action name="addBoundary">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/imgs/Icon/Load.ico</normaloff>
+     <normalon>:/imgs/Icon/Load.ico</normalon>
+     <disabledoff>:/imgs/Icon/Load.ico</disabledoff>
+     <disabledon>:/imgs/Icon/Load.ico</disabledon>:/imgs/Icon/Load.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Add Boundary Condition</string>
+   </property>
+  </action>
+  <action name="assignBoundary">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icon/Assign.ico</normaloff>
+     <normalon>:/imgs/Icon/Assign.ico</normalon>
+     <disabledoff>:/imgs/Icon/Assign.ico</disabledoff>
+     <disabledon>:/imgs/Icon/Assign.ico</disabledon>Icon/Assign.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Assign Boundary Condition</string>
+   </property>
+  </action>
+  <action name="runAnalysis">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icon/run.ico</normaloff>
+     <normalon>:/imgs/Icon/run.ico</normalon>Icon/run.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Run Consolidation Analysis</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionList_Nodes">
+   <property name="text">
+    <string>List Nodes</string>
+   </property>
+  </action>
+  <action name="actionList_Elements">
+   <property name="text">
+    <string>List Elements</string>
+   </property>
+  </action>
+  <action name="nodeList">
+   <property name="text">
+    <string>List Information</string>
+   </property>
+  </action>
+  <action name="elementList">
+   <property name="text">
+    <string>List Elements</string>
+   </property>
+  </action>
+  <action name="setWorkingFolder">
+   <property name="text">
+    <string>Set Working Folder</string>
+   </property>
+  </action>
+  <action name="solutionControl">
+   <property name="text">
+    <string>Solution Control</string>
+   </property>
+  </action>
+  <action name="loadResults">
+   <property name="text">
+    <string>Load results data</string>
+   </property>
+  </action>
+  <action name="animationSetting">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icon/Animate.ico</normaloff>
+     <normalon>:/imgs/Icon/Animate.ico</normalon>Icon/Animate.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Run Animation</string>
+   </property>
+  </action>
+  <action name="scaleSetting">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icon/Plot.ico</normaloff>
+     <normalon>:/imgs/Icon/Plot.ico</normalon>Icon/Plot.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Pick Result and Scale Setting</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+  </action>
+  <action name="watchList">
+   <property name="text">
+    <string>Monitoring Points</string>
+   </property>
+  </action>
+  <action name="runBackAnalysis">
+   <property name="text">
+    <string>Run Back Analysis</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="terzaghi1D">
+   <property name="text">
+    <string>Tergazhi Solution</string>
+   </property>
+  </action>
+  <action name="actionInput_Geometry">
+   <property name="text">
+    <string>Create Mesh</string>
+   </property>
+  </action>
+  <action name="saveAs">
+   <property name="text">
+    <string>Save As</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

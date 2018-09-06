@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/node.frag</file>
+        <file>shaders/node.vert</file>
+        <file>shaders/axis.frag</file>
+        <file>shaders/axis.vert</file>
+        <file>shaders/line.frag</file>
+        <file>shaders/line.vert</file>
+        <file>shaders/t10element.frag</file>
+        <file>shaders/t10element.vert</file>
+        <file>shaders/line1D.frag</file>
+        <file>shaders/line1D.vert</file>
+    </qresource>
+    <qresource prefix="/imgs">
+        <file>logo.png</file>
+        <file>Icon/changeFolder.ico</file>
+        <file>Icon/open.ico</file>
+        <file>Icon/save.ico</file>
+        <file>Icon/run.ico</file>
+        <file>Icon/material.ico</file>
+        <file>Icon/Animate.ico</file>
+        <file>Icon/animation.ico</file>
+        <file>Icon/Assign.ico</file>
+        <file>Icon/Load.ico</file>
+        <file>Icon/Mesh.ico</file>
+        <file>Icon/Plot.ico</file>
+        <file>Icon/STAGE.ico</file>
+        <file>Icon/model.png</file>
+        <file>Terzaghi.png</file>
+        <file>model.png</file>
+        <file>geometry.png</file>
+        <file>Icon/mainLogo.ico</file>
+    </qresource>
+</RCC>
