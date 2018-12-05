@@ -198,10 +198,10 @@ void CRSBackAnalysis::nonLinearTheory()
 void CRSBackAnalysis::exportData()
 {
     WriteToFile exportFile;
-    folderName=QFileDialog::getExistingDirectory(Q_NULLPTR,"Choose Save folder");
-    bool ok;
-    QString saveName=QInputDialog::getText(Q_NULLPTR,"Set file name","Set File Name",QLineEdit::Normal,"test",&ok);
-    saveName=folderName+"/"+saveName+".dat";
+    QString selfilter;
+    QString saveName=QFileDialog::getSaveFileName(Q_NULLPTR,"Chose save file name","",
+             tr("dat (*.dat)"),&selfilter);
+
     exportFile.fileName=saveName.toStdString();
     exportFile.ToFile(resultData);
     QMessageBox::information(Q_NULLPTR,"Done","Done");
@@ -304,7 +304,7 @@ void CRSBackAnalysis::on_browseLine_clicked()
     while(list.count()!=4)
     {
         bool ok;
-        QString inputCol=QInputDialog::getText(Q_NULLPTR,"Column of parameters","Column of test time, stress, stress, pore pressure:",QLineEdit::Normal,"1,2,3,4",&ok);
+        QString inputCol=QInputDialog::getText(Q_NULLPTR,"Column of parameters","Column index of testing time, strain, stress, pore pressure:",QLineEdit::Normal,"1,2,3,4",&ok);
         list=inputCol.split(",");
         if(list.count()==4)
         {

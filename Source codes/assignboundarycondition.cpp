@@ -49,6 +49,19 @@ void AssignBoundaryCondition::getUserData()
         nodeListTemp.resize(1,1);
         nodeListTemp(0,0)=0;
     }
+
+    if(ui->gradientCheck->isChecked())
+    {
+        gradientBool=true;
+    }
+    else
+    {
+        gradientBool=false;
+    }
+    aFactor=ui->aFactorLine->text().toDouble();
+    bFactor=ui->bFactorLine->text().toDouble();
+    cFactor=ui->cFactorLine->text().toDouble();
+
 }
 
 void AssignBoundaryCondition::assignUI()
@@ -61,7 +74,18 @@ void AssignBoundaryCondition::assignUI()
     ui->x1Line->setText(QString::number(x1,'f',5));
     ui->y0Line->setText(QString::number(y0,'f',5));
     ui->y1Line->setText(QString::number(y1,'f',5));
+    ui->aFactorLine->setText(QString::number(aFactor,'f',5));
+    ui->bFactorLine->setText(QString::number(bFactor,'f',5));
+    ui->cFactorLine->setText(QString::number(cFactor,'f',5));
     ui->listFileLine->setText(fileName);
+    if(gradientBool==true)
+    {
+        ui->gradientCheck->setChecked(true);
+    }
+    else
+    {
+        ui->gradientCheck->setChecked(false);
+    }
 }
 
 void AssignBoundaryCondition::defaultData()
@@ -74,6 +98,10 @@ void AssignBoundaryCondition::defaultData()
     x1=0;
     y0=0;
     y1=0;
+    aFactor=0;
+    bFactor=0;
+    cFactor=0;
+    gradientBool=false;
     fileName="";
 }
 
@@ -96,6 +124,10 @@ void AssignBoundaryCondition::getDatafromVector(int i, int j)
     x1=stageBoundary[i].v_x1[j];
     y0=stageBoundary[i].v_y0[j];
     y1=stageBoundary[i].v_y1[j];
+    gradientBool=stageBoundary[i].v_gradientBool[j];
+    aFactor=stageBoundary[i].v_aFactor[j];
+    bFactor=stageBoundary[i].v_bFactor[j];
+    cFactor=stageBoundary[i].v_cFactor[j];
     fileName=stageBoundary[i].v_nodeFileName[j];
 }
 
@@ -168,6 +200,31 @@ void AssignBoundaryCondition::createCrsStageBoundary(double H, double R, int con
     stageBoundary[0].v_y1.push_back(0); //fix y
     stageBoundary[0].v_y1.push_back(H); //move y
 
+    stageBoundary[0].v_gradientBool.resize(0);
+    stageBoundary[0].v_gradientBool.push_back(false); //fix x
+    stageBoundary[0].v_gradientBool.push_back(false); //fix x
+    stageBoundary[0].v_gradientBool.push_back(false); //fix y
+    stageBoundary[0].v_gradientBool.push_back(false); //move y
+
+    stageBoundary[0].v_aFactor.resize(0);
+    stageBoundary[0].v_aFactor.push_back(0); //fix x
+    stageBoundary[0].v_aFactor.push_back(0); //fix x
+    stageBoundary[0].v_aFactor.push_back(0); //fix y
+    stageBoundary[0].v_aFactor.push_back(0); //move y
+
+    stageBoundary[0].v_bFactor.resize(0);
+    stageBoundary[0].v_bFactor.push_back(0); //fix x
+    stageBoundary[0].v_bFactor.push_back(0); //fix x
+    stageBoundary[0].v_bFactor.push_back(0); //fix y
+    stageBoundary[0].v_bFactor.push_back(0); //move y
+
+
+    stageBoundary[0].v_cFactor.resize(0);
+    stageBoundary[0].v_cFactor.push_back(0); //fix x
+    stageBoundary[0].v_cFactor.push_back(0); //fix x
+    stageBoundary[0].v_cFactor.push_back(0); //fix y
+    stageBoundary[0].v_cFactor.push_back(0); //move y
+
     stageBoundary[1]=stageBoundary[0];
     stageBoundary[1].v_stageBoundaryIndex.push_back(5); //Pore pressure
     stageBoundary[1].v_nodeList.push_back(nodeListTemp); //Pore pressure
@@ -231,6 +288,10 @@ void AssignBoundaryCondition::on_addButton_clicked()
         stageBoundary[i].v_x1[j]=x1;
         stageBoundary[i].v_y0[j]=y0;
         stageBoundary[i].v_y1[j]=y1;
+        stageBoundary[i].v_gradientBool[j]=gradientBool;
+        stageBoundary[i].v_aFactor[j]=aFactor;
+        stageBoundary[i].v_bFactor[j]=bFactor;
+        stageBoundary[i].v_cFactor[j]=cFactor;
         stageBoundary[i].v_nodeFileName[j]=fileName;
         stageBoundary[i].v_nodeList[j]=nodeListTemp;
         cout<<"Boundary for stage"<<stageName.toStdString()<<" and boundary number "<<stageBoundaryIndex<<" is modified"<<endl;
@@ -244,6 +305,10 @@ void AssignBoundaryCondition::on_addButton_clicked()
         stageBoundary[i].v_x1.push_back(x1);
         stageBoundary[i].v_y0.push_back(y0);
         stageBoundary[i].v_y1.push_back(y1);
+        stageBoundary[i].v_gradientBool.push_back(gradientBool);
+        stageBoundary[i].v_aFactor.push_back(aFactor);
+        stageBoundary[i].v_bFactor.push_back(bFactor);
+        stageBoundary[i].v_cFactor.push_back(cFactor);
         stageBoundary[i].v_nodeFileName.push_back(fileName);
         stageBoundary[i].v_nodeList.push_back(nodeListTemp);
         cout<<"Boundary for stage"<<stageName.toStdString()<<" and boundary number "<<stageBoundaryIndex<<" is added"<<endl;
@@ -306,6 +371,10 @@ void AssignBoundaryCondition::on_stageCombo_activated(int index)
         ui->x1Line->setText("");
         ui->y0Line->setText("");
         ui->y1Line->setText("");
+        ui->aFactorLine->setText("");
+        ui->bFactorLine->setText("");
+        ui->cFactorLine->setText("");
+        ui->gradientCheck->setChecked(false);
     }
 }
 
@@ -346,6 +415,17 @@ void AssignBoundaryCondition::on_stageBoundaryIndexLine_textChanged(const QStrin
         ui->x1Line->setText(QString::number(stageBoundary[i].v_x1[j]));
         ui->y0Line->setText(QString::number(stageBoundary[i].v_y0[j]));
         ui->y1Line->setText(QString::number(stageBoundary[i].v_y1[j]));
+        ui->aFactorLine->setText(QString::number(stageBoundary[i].v_aFactor[j]));
+        ui->bFactorLine->setText(QString::number(stageBoundary[i].v_bFactor[j]));
+        ui->cFactorLine->setText(QString::number(stageBoundary[i].v_cFactor[j]));
+        if(stageBoundary[i].v_gradientBool[j]==true)
+        {
+            ui->gradientCheck->setChecked(true);
+        }
+        else
+        {
+            ui->gradientCheck->setChecked(false);
+        }
         ui->listFileLine->setText(stageBoundary[i].v_nodeFileName[j]);
     }
     else

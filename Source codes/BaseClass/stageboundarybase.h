@@ -28,6 +28,10 @@ public:
     vector<double> v_x1;
     vector<double> v_y0;
     vector<double> v_y1;
+    vector<bool> v_gradientBool;
+    vector<double> v_aFactor;
+    vector<double> v_bFactor;
+    vector<double> v_cFactor;
 };
 
 #endif // STAGEBOUNDARYBASE_H

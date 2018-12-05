@@ -17,6 +17,11 @@ void WatchList::getUserData()
 {
     watchIndex=ui->watchIndexLine->text().toInt();
     title=ui->titleLine->text();
+    if(title=="")
+    {
+        title="Please enter name";
+        ui->titleLine->setText(title);
+    }
     watchType=ui->watchCombo->currentIndex();
     x0=ui->x0Line->text().toDouble();
     x1=ui->x1Line->text().toDouble();
@@ -28,6 +33,14 @@ void WatchList::getUserData()
     {
         endStep=beginStep;
         ui->endStepLine->setText(QString::number(endStep));
+    }
+    if(ui->averageCheck->isChecked())
+    {
+        averageBool=true;
+    }
+    else
+    {
+        averageBool=false;
     }
 }
 
@@ -42,6 +55,7 @@ void WatchList::getData(int index)
     beginStep=watchList[i].beginStep;
     endStep=watchList[i].endStep;
     title=watchList[i].title;
+    averageBool=watchList[i].averageBool;
     showData();
 }
 
@@ -55,6 +69,14 @@ void WatchList::showData()
     ui->endStepLine->setText(QString::number(endStep));
     ui->titleLine->setText(title);
     ui->watchCombo->setCurrentIndex(watchType);
+    if(averageBool==true)
+    {
+        ui->averageCheck->setChecked(true);
+    }
+    else
+    {
+        ui->averageCheck->setChecked(false);
+    }
 }
 
 void WatchList::defaultData()
@@ -67,6 +89,7 @@ void WatchList::defaultData()
     ui->y1Line->setText("");
     ui->beginStepLine->setText("");
     ui->endStepLine->setText("");
+    ui->averageCheck->setChecked(true);
 }
 
 void WatchList::sendSIGNAL()
@@ -89,6 +112,7 @@ void WatchList::createCrsWatchList(double H, double R)
     topMovement.y1=H;
     topMovement.beginStep=1;
     topMovement.endStep=99999;
+    topMovement.averageBool=true;
 
     porePressure.watchIndex=2;
     porePressure.title="Pore Pressure";
@@ -99,6 +123,7 @@ void WatchList::createCrsWatchList(double H, double R)
     porePressure.y1=0;
     porePressure.beginStep=1;
     porePressure.endStep=99999;
+    porePressure.averageBool=true;
 
 
     totalStress.watchIndex=3;
@@ -110,6 +135,7 @@ void WatchList::createCrsWatchList(double H, double R)
     totalStress.y1=H;
     totalStress.beginStep=1;
     totalStress.endStep=99999;
+    totalStress.averageBool=true;
 
     watchList.resize(0);
     watchList.push_back(topMovement);
@@ -127,19 +153,23 @@ void WatchList::on_okButton_clicked()
 
     getUserData();
     watchIndex=ui->watchIndexLine->text().toInt();
+
+    //Add new index
     if(watchIndex>(watchList.size()+2))
     {
         watchIndex=watchList.size()+1;
         ui->watchIndexLine->setText(QString::number(watchIndex));
     }
 
+    //Correct index value
     if(watchIndex<1)
     {
         watchIndex=1;
         ui->watchIndexLine->setText(QString::number(watchIndex));
     }
 
-    if(watchIndex<watchList.size())
+    //Normal index value
+    if(watchIndex<=watchList.size())
     {
         int i=watchIndex-1;
         watchList[i].title=title;
@@ -150,6 +180,7 @@ void WatchList::on_okButton_clicked()
         watchList[i].y1=y1;
         watchList[i].beginStep=beginStep;
         watchList[i].endStep=endStep;
+        watchList[i].averageBool=averageBool;
     }
     else
     {
@@ -163,6 +194,7 @@ void WatchList::on_okButton_clicked()
        newBase.y1=y1;
        newBase.beginStep=beginStep;
        newBase.endStep=endStep;
+       newBase.averageBool=averageBool;
        watchList.push_back(newBase);
     }
 
@@ -203,3 +235,29 @@ void WatchList::on_exportButton_clicked()
 {
     emit sendSIGNALNow(watchList);
 }
+
+void WatchList::on_delButton_clicked()
+{
+    watchIndex=ui->watchIndexLine->text().toInt();
+    vector<WatchListBase> watchList_new;
+    watchList_new.resize(0);
+
+    int indexCount=1;
+    for(int i=0;i<watchList.size();i++)
+    {
+        int oldIndex=watchList[i].watchIndex;
+
+        if(watchIndex!=oldIndex)
+        {
+            watchList_new.push_back(watchList[i]);
+            watchList_new[indexCount-1].watchIndex=indexCount;
+            indexCount=indexCount+1;
+        }
+    }
+
+    watchList.resize(0);
+    watchList=watchList_new;
+
+    ui->watchIndexLine->setText("1");
+}
+

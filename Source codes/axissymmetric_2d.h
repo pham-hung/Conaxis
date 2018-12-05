@@ -117,7 +117,7 @@ public:
     void calculateStressQuad8p(int &eleNum);
 
     //watchList
-    double calculateWatchList(int index, int step); //index is 1-based, step is 1-based
+    double calculateWatchList(int index, int step); //index is 1-based, step is 1-based    
     void exportWatchList();
 
 signals:
@@ -227,6 +227,9 @@ private:
     Gauss2D gauss;
     PvdLib analyTest;
     SortMatrixXd matrixLib;
+
+    //Watch list result
+    vector<double> foundNodeResult;
 };
 
 #endif // AXISSYMMETRIC_2D_H

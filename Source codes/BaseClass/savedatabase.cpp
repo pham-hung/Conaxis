@@ -10,10 +10,9 @@ void SaveDataBase::saveModel()
     //Get folder name and file name
     if(saveClicked==false)
     {
-        folderName=QFileDialog::getExistingDirectory();
-        bool ok;
-        QString fileNameGet=QInputDialog::getText(Q_NULLPTR,"Type Save File Name","File name:",QLineEdit::Normal,"model",&ok);
-        fileName=folderName+"/"+fileNameGet+".db";
+        QString selfilter;
+        fileName=QFileDialog::getSaveFileName(Q_NULLPTR,"Chose save file name","",
+                 tr("coa (*.coa)"),&selfilter);
         saveClicked=true;
     }
 
@@ -33,6 +32,22 @@ void SaveDataBase::saveModel()
         }
         stream<<endl;
         //Save dimension
+
+        stream<<"#GEOMETRY"<<endl;
+        stream<<geometry.re<<" "<<geometry.rw<<" "<<geometry.rs<<" "<<geometry.length<<" "<<geometry.surfaceElevation<<endl;
+        stream<<geometry.numberOfLayer<<" "<<geometry.numberOfElementSmear<<" "<<geometry.numberOfElementSoil<<" "<<geometry.defaultSubLayer<<" "<<geometry.qw<<" "<<geometry.analysisType<<endl;
+        stream<<"#LAYERINFO"<<endl;
+        stream<<geometry.layerInfo.rows()<<" "<<geometry.layerInfo.cols()<<endl;
+        stream.setRealNumberNotation(QTextStream::ScientificNotation);
+        stream.setRealNumberPrecision(5);
+        for(int i=0;i<geometry.layerInfo.rows();i++)
+        {
+            for (int j=0;j<geometry.layerInfo.cols();j++)
+            {
+                stream<<geometry.layerInfo(i,j)<<" ";
+            }
+            stream<<endl;
+        }
 
         stream<<"#DIMENSION"<<endl;
         stream<<coordinates.rows()<<" "<<coordinates.cols()<<" "<<elements.rows()<<" "<<elements.cols()<<endl;
@@ -189,7 +204,36 @@ void SaveDataBase::saveModel()
             stream<<endl;
 
             stream.setRealNumberNotation(QTextStream::SmartNotation);
+            stream.setRealNumberPrecision(0);
+            stream<<"#GRADIENT"<<endl;
+            for(int j=0;j<NoS;j++)
+            {
+                stream<<stageBoundary[i].v_gradientBool[j]<<" ";
+            }
+            stream<<endl;
+
             stream.setRealNumberPrecision(5);
+            stream<<"#AFACTOR"<<endl;
+            for(int j=0;j<NoS;j++)
+            {
+                stream<<stageBoundary[i].v_aFactor[j]<<" ";
+            }
+            stream<<endl;
+
+            stream<<"#BFACTOR"<<endl;
+            for(int j=0;j<NoS;j++)
+            {
+                stream<<stageBoundary[i].v_bFactor[j]<<" ";
+            }
+            stream<<endl;
+
+            stream<<"#CFACTOR"<<endl;
+            for(int j=0;j<NoS;j++)
+            {
+                stream<<stageBoundary[i].v_cFactor[j]<<" ";
+            }
+            stream<<endl;
+
             stream<<"#X0"<<endl;
             for(int j=0;j<NoS;j++)
             {
@@ -228,7 +272,7 @@ void SaveDataBase::saveModel()
             stream<<watch[j].title<<endl;
             stream.setRealNumberNotation(QTextStream::ScientificNotation);
             stream.setRealNumberPrecision(5);
-            stream<<watch[j].watchType<<" "<<watch[j].x0<<" "<<watch[j].x1<<" "<<watch[j].y0<<" "<<watch[j].y1<<" "<<watch[j].beginStep<<" "<<watch[j].endStep<<endl;
+            stream<<watch[j].watchType<<" "<<watch[j].x0<<" "<<watch[j].x1<<" "<<watch[j].y0<<" "<<watch[j].y1<<" "<<watch[j].beginStep<<" "<<watch[j].endStep<<" "<<watch[j].averageBool<<endl;
         }
     }
     mFile.close();
@@ -245,7 +289,10 @@ void SaveDataBase::saveAsModel()
 void SaveDataBase::readModel()
 {    
     projectParameters.resize(0);
-    fileName=QFileDialog::getOpenFileName();
+    QString selfilter;
+    fileName=QFileDialog::getOpenFileName(Q_NULLPTR,"Open data file","",
+             tr("coa (*.coa);;text (*.txt *.dat);;All files (*.*)" ),&selfilter);
+
     int nol=0;
     int non=0, noe=0, nom=0, nob=0, nos=0, nosb=0;
     int nobb;
@@ -284,6 +331,58 @@ void SaveDataBase::readModel()
                     }
                 }
 
+            }
+
+            if(Line=="#GEOMETRY")
+            {
+                Line=stream.readLine();
+                list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                Temp=list[0];
+                geometry.re=Temp.toDouble();
+                Temp=list[1];
+                geometry.rw=Temp.toDouble();
+                Temp=list[2];
+                geometry.rs=Temp.toDouble();
+                Temp=list[3];
+                geometry.length=Temp.toDouble();
+                Temp=list[4];
+                geometry.surfaceElevation=Temp.toDouble();
+
+                Line=stream.readLine();
+                list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                Temp=list[0];
+                geometry.numberOfLayer=Temp.toInt();
+                Temp=list[1];
+                geometry.numberOfElementSmear=Temp.toInt();
+                Temp=list[2];
+                geometry.numberOfElementSoil=Temp.toInt();
+                Temp=list[3];
+                geometry.defaultSubLayer=Temp.toInt();
+                Temp=list[4];
+                geometry.qw=Temp.toDouble();
+                Temp=list[5];
+                geometry.analysisType=Temp.toInt();
+            }
+
+            if(Line=="#LAYERINFO")
+            {
+                Line=stream.readLine();
+                list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                Temp=list[0];
+                int layerInforRow=Temp.toInt();
+                Temp=list[1];
+                int layerInfoCol=Temp.toInt();
+                geometry.layerInfo.resize(layerInforRow,layerInfoCol);
+                for(int j=0;j<layerInforRow;j++)
+                {
+                    Line=stream.readLine();
+                    list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                    for (int jj=0;jj<layerInfoCol;jj++)
+                    {
+                        Temp=list[jj];
+                        geometry.layerInfo(j,jj)=Temp.toDouble();
+                    }
+                }
             }
 
             if(Line=="#DIMENSION") //Dimension
@@ -342,8 +441,6 @@ void SaveDataBase::readModel()
                 Temp=list[0];
                 nom=Temp.toDouble();
                 material.resize(nom);
-
-
             }
 
             int ii=0;
@@ -687,6 +784,10 @@ void SaveDataBase::readModel()
                         stageBoundary[ii].v_y0.resize(nobb);
                         stageBoundary[ii].v_y1.resize(nobb);
                         stageBoundary[ii].v_nodeList.resize(nobb);
+                        stageBoundary[ii].v_gradientBool.resize(nobb);
+                        stageBoundary[ii].v_aFactor.resize(nobb);
+                        stageBoundary[ii].v_bFactor.resize(nobb);
+                        stageBoundary[ii].v_cFactor.resize(nobb);
                     }
                     if(Line=="#BCINDEX")
                     {
@@ -771,6 +872,54 @@ void SaveDataBase::readModel()
                         {
                             Temp=list[kk];
                             stageBoundary[ii].v_boundaryIndex[kk]=Temp.toInt();
+                        }
+
+                    }
+
+                    if(Line=="#GRADIENT")
+                    {
+                        Line=stream.readLine();
+                        list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                        for(int kk=0;kk<nobb;kk++)
+                        {
+                            Temp=list[kk];
+                            stageBoundary[ii].v_gradientBool[kk]=Temp.toInt();
+                        }
+
+                    }
+
+                    if(Line=="#AFACTOR")
+                    {
+                        Line=stream.readLine();
+                        list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                        for(int kk=0;kk<nobb;kk++)
+                        {
+                            Temp=list[kk];
+                            stageBoundary[ii].v_aFactor[kk]=Temp.toDouble();
+                        }
+
+                    }
+
+                    if(Line=="#BFACTOR")
+                    {
+                        Line=stream.readLine();
+                        list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                        for(int kk=0;kk<nobb;kk++)
+                        {
+                            Temp=list[kk];
+                            stageBoundary[ii].v_bFactor[kk]=Temp.toDouble();
+                        }
+
+                    }
+
+                    if(Line=="#CFACTOR")
+                    {
+                        Line=stream.readLine();
+                        list=Line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+                        for(int kk=0;kk<nobb;kk++)
+                        {
+                            Temp=list[kk];
+                            stageBoundary[ii].v_cFactor[kk]=Temp.toDouble();
                         }
 
                     }
@@ -876,6 +1025,20 @@ void SaveDataBase::readModel()
 
                         Temp=list[6];
                         watch[ii].endStep=Temp.toInt();
+
+                        if(list.size()>7)
+                        {
+                            Temp=list[7];
+                            int averageBool=Temp.toInt();
+                            if(averageBool>0)
+                            {
+                                watch[ii].averageBool=true;
+                            }
+                            else
+                            {
+                                watch[ii].averageBool=false;
+                            }
+                        }
                         ii=ii+1;
                     }
                     Line=stream.readLine();
@@ -1023,6 +1186,7 @@ void SaveDataBase::sendSIGNAL()
     emit sendBoundary(boundary);
     emit sendStageBoundary(stageBoundary);
     emit sendWatchListBase(watch);
+    emit sendGeometry(geometry);
     qDebug()<<"Data base is sent"<<endl;
 }
 
@@ -1067,4 +1231,9 @@ void SaveDataBase::getProjectSetting(vector<double> projectParameters)
 void SaveDataBase::getWatchListBase(vector<WatchListBase> watch)
 {
     this->watch=watch;
+}
+
+void SaveDataBase::getGeometryBase(GeometryBase geometry)
+{
+    this->geometry=geometry;
 }

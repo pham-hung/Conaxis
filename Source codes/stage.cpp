@@ -102,7 +102,7 @@ void Stage::getUserData()
     {
         fileName="";
         timeStep.resize(1,1);
-        timeStep.setZero();
+        timeStep(0,0)=0;
     }
 
 }

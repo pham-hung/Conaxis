@@ -388,6 +388,63 @@ void Geometry::createMeshNoSmear()
     //Without smearzones
 }
 
+void Geometry::shownInformation()
+{
+    ui->reLine->setText(QString::number(re));
+    ui->rwLine->setText(QString::number(rw));    
+    ui->lengthLine->setText(QString::number(length));
+    ui->elevationLine->setText(QString::number(surfaceElevation));
+    ui->qwLine->setText(QString::number(qw));
+    ui->npsLine->setText(QString::number(numberOfElementSmear));
+    ui->nplLine->setText(QString::number(numberOfElementSoil));
+    ui->subLayerLine->setText(QString::number(defaultSubLayer));
+    ui->layerLine->setText(QString::number(numberOfLayer));
+    ui->analysisBox->setCurrentIndex(analysisType);
+    ui->rsLine->setText(QString::number(rs));
+
+    ui->inforTable->setRowCount(numberOfLayer);
+    ui->inforTable->setColumnCount(4);
+    if (layerInfo.rows()>0)
+    {
+        double value;
+        for (int i=0;i<layerInfo.rows();i++)
+        {
+            for (int j=0;j<4;j++)
+            {
+                value=layerInfo(i,j);
+                QTableWidgetItem *item=ui->inforTable->item(i,j);
+                if(item==NULL)
+                {
+                    QTableWidgetItem *newItem=new QTableWidgetItem(QString::number(value));
+                    ui->inforTable->setItem(i,j,newItem);
+                }
+                else
+                {
+                    ui->inforTable->itemAt(i,j)->setText(QString::number(value));
+                }
+            }
+        }
+    }
+}
+
+void Geometry::saveDataToObject()
+{
+    on_updateButton_clicked();
+    geometryObject.re=re;
+    geometryObject.rw=rw;
+    geometryObject.rs=rs;
+    geometryObject.numberOfLayer=numberOfLayer;
+    geometryObject.numberOfElementSmear=numberOfElementSmear;
+    geometryObject.numberOfElementSoil=numberOfElementSoil;
+    geometryObject.surfaceElevation=surfaceElevation;
+    geometryObject.qw=qw;
+    geometryObject.length=length;
+    geometryObject.defaultSubLayer=defaultSubLayer;
+    geometryObject.analysisType=analysisType;
+    geometryObject.layerInfo=layerInfo;
+    emit sendGeometryObject(geometryObject);
+}
+
 bool Geometry::checkInformation()
 {
     return true;
@@ -479,16 +536,7 @@ void Geometry::on_meshButton_clicked()
     {
         createMeshSmear();
     }
-    QString fileName="C:/elements.dat";
-    exportFile.fileName=fileName.toStdString();
-    exportFile.ToFile(elements);
-
-    fileName="C:/coordinates.dat";
-    exportFile.fileName=fileName.toStdString();
-    exportFile.ToFile(coordinates);
-
     emit sendGeometryData(elements,coordinates,analysisType,qw);
-
 }
 
 void Geometry::on_analysisBox_currentIndexChanged(int index)
@@ -567,4 +615,22 @@ void Geometry::on_setSubLayer_clicked()
 void Geometry::on_replotButton_clicked()
 {
     this->close();
+}
+
+void Geometry::getGeometryBaseObject(GeometryBase geometryObject)
+{
+    this->geometryObject=geometryObject;
+    re=geometryObject.re;
+    rw=geometryObject.rw;
+    rs=geometryObject.rs;
+    length=geometryObject.length;
+    numberOfLayer=geometryObject.numberOfLayer;
+    qw=geometryObject.qw;
+    numberOfElementSmear=geometryObject.numberOfElementSmear;
+    numberOfElementSoil=geometryObject.numberOfElementSoil;
+    surfaceElevation=geometryObject.surfaceElevation;
+    analysisType=geometryObject.analysisType;
+    layerInfo=geometryObject.layerInfo;
+    defaultSubLayer=geometryObject.defaultSubLayer;
+    shownInformation();
 }

@@ -55,7 +55,6 @@ private slots:
     void on_boundaryCombo_activated(int index);
     void on_stageBoundaryIndexLine_textChanged(const QString &arg1);
     void on_listButton_clicked();
-
     void on_resetButton_clicked();
 
 signals:
@@ -77,6 +76,10 @@ private:
     int assignType;
     int stageBoundaryIndex;
     double x0, x1, y0, y1;
+    bool gradientBool;
+    double aFactor;
+    double bFactor;
+    double cFactor;
 
 };
 

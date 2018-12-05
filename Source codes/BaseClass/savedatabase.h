@@ -26,6 +26,7 @@
 #include "BaseClass/boundaryconditionbase.h"
 #include "BaseClass/stageboundarybase.h"
 #include "BaseClass/watchlistbase.h"
+#include "BaseClass/geometrybase.h"
 
 using namespace std;
 
@@ -56,6 +57,7 @@ signals:
     void sendBoundary(vector<BoundaryConditionBase> boundary);
     void sendStageBoundary(vector<StageBoundaryBase> stageBoundary);
     void sendWatchListBase(vector<WatchListBase> watch);
+    void sendGeometry(GeometryBase geometry);
 
 public slots:
     void getMesh(Ref<MatrixXd> coordinates,Ref<MatrixXd> elements,QString folderName);
@@ -65,6 +67,7 @@ public slots:
     void getBoundary(vector<BoundaryConditionBase> boundary);
     void getProjectSetting(vector<double> projectParameters);
     void getWatchListBase(vector<WatchListBase> watch);
+    void getGeometryBase(GeometryBase geometry);
 
 private:
     bool saveClicked=false;
@@ -78,6 +81,7 @@ private:
     MatrixXd tempMatrix;
     vector<MatrixXd> vectorNode;
     vector<WatchListBase> watch;
+    GeometryBase geometry;
 
     QFile mFile;
     QDir mDir;

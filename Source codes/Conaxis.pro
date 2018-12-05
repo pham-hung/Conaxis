@@ -65,7 +65,8 @@ SOURCES += main.cpp\
     pvdbackanalysis.cpp \
     BaseClass/terzaghi1d.cpp \
     geometry.cpp \
-    BaseClass/crs_base.cpp
+    BaseClass/crs_base.cpp \
+    BaseClass/geometrybase.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -102,7 +103,8 @@ HEADERS  += mainwindow.h \
     pvdbackanalysis.h \
     BaseClass/terzaghi1d.h \
     geometry.h \
-    BaseClass/crs_base.h
+    BaseClass/crs_base.h \
+    BaseClass/geometrybase.h
 
 FORMS    += mainwindow.ui \
     colorform.ui \

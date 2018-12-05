@@ -11,6 +11,7 @@
 #include "writetofile.h"
 #include "stdio.h"
 #include "math.h"
+#include "BaseClass/geometrybase.h"
 
 using namespace std;
 using namespace Eigen;
@@ -29,7 +30,10 @@ public:
     void updateInformation();
     void createMeshSmear();
     void createMeshNoSmear();
-    bool checkInformation();    
+    void shownInformation();
+    void saveDataToObject();
+
+    bool checkInformation();
     void replot();
     bool isFound(pair<double,double> findPair, pair<double,double> soucePair);
     int findNodeIndex(double x, double y, vector<pair<double,double> > &XYCoordinates);
@@ -43,9 +47,11 @@ private slots:
     void on_analysisBox_currentIndexChanged(int index);
     void on_setSubLayer_clicked();
     void on_replotButton_clicked();
+    void getGeometryBaseObject(GeometryBase geometryObject);
 
 signals:
     void sendGeometryData(Ref<MatrixXd> elements, Ref<MatrixXd>coordinates,int analysisType, double qw);
+    void sendGeometryObject(GeometryBase geometryObject);
 
 private:
     Ui::Geometry *ui;
@@ -67,6 +73,7 @@ private:
 
     vector<pair<double,double> > XYCoordinates;
     vector<pair<int,int> > node1D;
+    GeometryBase geometryObject;
 };
 
 #endif // GEOMETRY_H

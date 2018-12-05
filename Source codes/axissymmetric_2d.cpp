@@ -522,6 +522,18 @@ void AxisSymmetric_2D::createBoundaryConditionEachSubStep(int currentStage, doub
         double val1=boundary[boundaryIndex-1].val1;
         double value;
 
+        bool gradientBool=stageBoundary[i].v_gradientBool[j];
+        double aFactor=stageBoundary[i].v_aFactor[j];
+        double bFactor=stageBoundary[i].v_bFactor[j];
+        double cFactor=stageBoundary[i].v_cFactor[j];
+
+        if(gradientBool==false)
+        {
+            aFactor=0;
+            bFactor=0;
+            cFactor=0;
+        }
+
         MatrixXd nodeList=stageBoundary[i].v_nodeList[j];
         MatrixXd foundNode;
         MatrixXd tempMatrix;
@@ -563,28 +575,49 @@ void AxisSymmetric_2D::createBoundaryConditionEachSubStep(int currentStage, doub
             tempMatrix.col(0)=nodeList.col(0);
         }
 
-        //boundaryType fixX=0, fixY=1, FixH=2, MoveY=3
+        //boundaryType fixX=0, fixY=1, FixH=2, Pressure Y=3; Pressure X=4;
         if(boundaryType==0)
         {
-            tempMatrix.col(1).fill(value);
+            for (int ii=0;ii<tempMatrix.rows();ii++)
+            {
+                int index=tempMatrix(ii,0)-1;
+                double xCoord=coordinates(index,1);
+                double yCoord=coordinates(index,2);
+                double valueBoundary=aFactor*xCoord+bFactor*yCoord+cFactor+value;
+                tempMatrix(ii,1)=valueBoundary;
+            }   
             matrixLib.addMatrixReplace(fixx,tempMatrix,0);
         }
         if(boundaryType==1)
         {
-            tempMatrix.col(1).fill(value);
+            for (int ii=0;ii<tempMatrix.rows();ii++)
+            {
+                int index=tempMatrix(ii,0)-1;
+                double xCoord=coordinates(index,1);
+                double yCoord=coordinates(index,2);
+                double valueBoundary=aFactor*xCoord+bFactor*yCoord+cFactor+value;
+                tempMatrix(ii,1)=valueBoundary;
+            }
             matrixLib.addMatrixReplace(fixy,tempMatrix,0);
         }
         if(boundaryType==2)
         {
-            tempMatrix.col(1).fill(value);
+            for (int ii=0;ii<tempMatrix.rows();ii++)
+            {
+                int index=tempMatrix(ii,0)-1;
+                double xCoord=coordinates(index,1);
+                double yCoord=coordinates(index,2);
+                double valueBoundary=aFactor*xCoord+bFactor*yCoord+cFactor+value;
+                tempMatrix(ii,1)=valueBoundary;
+            }
             matrixLib.addMatrixReplace(fixh,tempMatrix,0);
         }
-        if(boundaryType==3)
+        if(boundaryType==3) //Not support gradient yet
         {
             transferLineLoadToNodalLoad(tempMatrix,value);
             matrixLib.addMatrix(Fy,tempMatrix,0);
         }
-        if(boundaryType==4)
+        if(boundaryType==4) //Not support gradient yet
         {
             transferLineLoadToNodalLoadXDirection(tempMatrix,value);
             matrixLib.addMatrix(Fx,tempMatrix,0);
@@ -2103,6 +2136,8 @@ double AxisSymmetric_2D::calculateWatchList(int index, int step) //base 1, and b
     double x1=watch[i].x1;
     double y0=watch[i].y0;
     double y1=watch[i].y1;
+    bool averageBool=watch[i].averageBool;
+
     MatrixXd foundNode;
 
     if(watchType<=2)
@@ -2116,6 +2151,7 @@ double AxisSymmetric_2D::calculateWatchList(int index, int step) //base 1, and b
 
     double totalResults=0;
     int nodeCount=0;
+
     for (int jj=0;jj<foundNode.rows();jj++)
     {
         int nodeIndex=foundNode(jj,0)-1;
@@ -2182,18 +2218,25 @@ void AxisSymmetric_2D::exportWatchList()
     watchListResult.resize(watch.size());
     for (int i=0;i<watch.size();i++)
     {
+        //Get information of watch lists
         QString title=watch[i].title;
         int watchType=watch[i].watchType;
         double x0=watch[i].x0;
         double x1=watch[i].x1;
         double y0=watch[i].y0;
         double y1=watch[i].y1;
+        bool averageBool=watch[i].averageBool;
+
         int firstStep=watch[i].beginStep;
         int endStep=watch[i].endStep;
         if(endStep>ns){endStep=ns;}
         if(firstStep<1){firstStep=1;}
 
         MatrixXd foundNode;
+        vector<int> nodeList; //for coordinates output
+        nodeList.resize(0);
+        bool exportNodeList=false; //node list only needs to be export once only
+
         if(watchType<=2)
         {
             matrixLib.findXY(coordinates,x0,x1,y0,y1,foundNode);
@@ -2204,88 +2247,203 @@ void AxisSymmetric_2D::exportWatchList()
         }
 
         MatrixXd outputMatrix;
-        outputMatrix.resize(endStep-firstStep+1,3);
 
         for (int kk=firstStep-1;kk<endStep;kk++)
         {
+            //Loop over each step
+            //If the average bool is false, format result like this
+            //Step Time Result1 Result2 Result3...
+            //If average bool is true, format table
+            //Step Time Result_Averag
+
             double totalResults=0;
             int nodeCount=0;
+
+            vector<double> nodeListResult;
+            nodeListResult.resize(0);
+
             for (int jj=0;jj<foundNode.rows();jj++)
             {
                 int index=foundNode(jj,0)-1;
                 if(watchType==0) //X direction
                 {
-                    totalResults=totalResults+U(index,kk);
+                    double nodalResult=U(index,kk);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+                    nodeListResult.push_back(nodalResult);
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if(watchType==1)
                 {
-                    totalResults=totalResults+V(index,kk);
+                    double nodalResult=V(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if(watchType==2)
                 {
                     if(nodfmt(index,1)==3)
                     {
-                        totalResults=totalResults+P(index,kk);
+                        double nodalResult=P(index,kk);
+                        nodeListResult.push_back(nodalResult);
+                        if(exportNodeList==false){nodeList.push_back(index);}
+
+                        totalResults=totalResults+nodalResult;
                         nodeCount=nodeCount+1;
                     }
                 }
                 else if (watchType==3)
                 {
-                    totalResults=totalResults+Sxx(index,kk);
+                    double nodalResult=Sxx(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if (watchType==4)
                 {
-                    totalResults=totalResults+Syy(index,kk);
+                    double nodalResult=Syy(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if (watchType==5)
                 {
-                    totalResults=totalResults+Sxy(index,kk);
+                    double nodalResult=Sxy(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if (watchType==6)
                 {
-                    totalResults=totalResults+Pore(index,kk);
+                    double nodalResult=Pore(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if (watchType==7)
                 {
-                    totalResults=totalResults+Sxx(index,kk)+Pore(index,kk);
+                    double nodalResult=Sxx(index,kk)+Pore(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if (watchType==8)
                 {
-                    totalResults=totalResults+Syy(index,kk)+Pore(index,kk);
+                    double nodalResult=Syy(index,kk)+Pore(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
                 else if (watchType==9)
                 {
-                    totalResults=totalResults+Sxy(index,kk)+Pore(index,kk);
+                    double nodalResult=Sxy(index,kk);
+                    nodeListResult.push_back(nodalResult);
+                    if(exportNodeList==false){nodeList.push_back(index);}
+
+                    totalResults=totalResults+nodalResult;
                     nodeCount=nodeCount+1;
                 }
             }
             totalResults=totalResults/double(nodeCount);
-            outputMatrix(kk,0)=firstStep+kk;
-            outputMatrix(kk,2)=totalResults;
-            outputMatrix(kk,1)=calculationTime(kk,0);
-        }
+
+            //for first step
+            if(exportNodeList==false)
+            {
+                //resize output Matrix results
+                if(averageBool==false) //
+                {
+                    outputMatrix.resize(endStep-firstStep+1,nodeListResult.size()+2);
+                }
+                else
+                {
+                    outputMatrix.resize(endStep-firstStep+1,3);
+                }
+                MatrixXd nodeFoundCoordinates;
+                nodeFoundCoordinates.resize(nodeList.size(),3);
+                for (int nn=0;nn<nodeList.size();nn++)
+                {
+                    int index=nodeList[nn];
+                    nodeFoundCoordinates(nn,0)=index+1;
+                    nodeFoundCoordinates(nn,1)=coordinates(index,1);
+                    nodeFoundCoordinates(nn,2)=coordinates(index,2);
+                }
+
+                if(folderName=="")
+                {
+                    folderName=QFileDialog::getExistingDirectory(Q_NULLPTR,"Chose save folder");
+                }
+                QDir mDir;
+                QString watchListFolder=folderName+"/WatchList";
+                mDir.mkdir(watchListFolder);
+                fileName=watchListFolder+"/"+"nodeCoordinate_"+title+".txt";
+                exportFile.fileName=fileName.toStdString();
+                QStringList header={"Node#","X-coordinate","Y-coordinate"};
+                exportFile.ToFile(header,nodeFoundCoordinates);
+            }
+            exportNodeList=true;
+
+            //Save to ouput Matrix
+            if(averageBool==true)
+            {
+                outputMatrix(kk,0)=firstStep+kk;
+                outputMatrix(kk,1)=calculationTime(kk,0);
+                outputMatrix(kk,2)=totalResults;
+            }
+            else
+            {
+                outputMatrix(kk,0)=firstStep+kk;
+                outputMatrix(kk,1)=calculationTime(kk,0);
+                for (int nn=0;nn<nodeListResult.size();nn++)
+                {
+                    outputMatrix(kk,2+nn)=nodeListResult[nn];
+                }
+            }
+        } //End loop over each step
+
+        //Write results
         if(folderName=="")
         {
             folderName=QFileDialog::getExistingDirectory(Q_NULLPTR,"Chose save folder");
         }
+
         QDir mDir;
         QString watchListFolder=folderName+"/WatchList";
         mDir.mkdir(watchListFolder);
 
         fileName=watchListFolder+"/"+title+".txt";
         exportFile.fileName=fileName.toStdString();
-        exportFile.ToFile(outputMatrix);
+        if(averageBool==true)
+        {
+            QStringList header={"Step#","Time(days)","Average_result"};
+            exportFile.ToFile(header,outputMatrix);
+        }
+        else
+        {
+            QStringList header={"Step#","Time(days)"};
+            for(int nn=0;nn<nodeList.size();nn++)
+            {
+                int index=nodeList[nn]+1;
+                QString newString="Node_"+QString::number(index,'f',0);
+                header.append(newString);
+            }
+            exportFile.ToFile(header,outputMatrix);
+        }
         watchListResult[i]=outputMatrix;
-
-        qDebug()<<"export watch list"<<endl;
     }
 }
 

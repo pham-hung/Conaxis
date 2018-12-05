@@ -30,12 +30,12 @@ public:
 public slots:
     void getWatchListBase(vector<WatchListBase> watchList);
 
-
 private slots:
-    void on_okButton_clicked();
+    void on_okButton_clicked(); //add,modify watch list
     void on_watchIndexLine_textChanged(const QString &arg1);
     void on_closeButton_clicked();
     void on_exportButton_clicked();
+    void on_delButton_clicked();
 
 signals:
     void sendSignal(vector<WatchListBase> watchList);

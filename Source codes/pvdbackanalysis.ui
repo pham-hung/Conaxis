@@ -272,14 +272,14 @@
     <item>
      <widget class="QLabel" name="label_11">
       <property name="text">
-       <string>Material 2 is drained region, Material 1 is normal soil. </string>
+       <string>Material type 2 is drained region, Material type 1 is normal soil. </string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="label_13">
       <property name="text">
-       <string>The modified factor Cd is only applied for material 2</string>
+       <string>The modified factor Cd is only applied for Material type 2.</string>
       </property>
      </widget>
     </item>

@@ -882,6 +882,8 @@ void MainWindow::on_saveData_triggered()
     connect(boundary,SIGNAL(sendParameters(vector<BoundaryConditionBase>)),save,SLOT(getBoundary(vector<BoundaryConditionBase>)));
     connect(stageBoundary,SIGNAL(sendParametersStageBoundary(vector<StageBoundaryBase>)),save,SLOT(getStageBoundary(vector<StageBoundaryBase>)));
     connect(watch,SIGNAL(sendSignal(vector<WatchListBase>)),save,SLOT(getWatchListBase(vector<WatchListBase>)));
+    connect(geo,SIGNAL(sendGeometryObject(GeometryBase)),save,SLOT(getGeometryBase(GeometryBase)));
+
     emit this->sendMesh(coordinates,elements,folderName);
 
     project->sendSIGNAL();
@@ -890,6 +892,8 @@ void MainWindow::on_saveData_triggered()
     boundary->sendSignal();
     stageBoundary->sendSIGNAL();
     watch->sendSIGNAL();
+    geo->saveDataToObject();
+
     save->saveModel();
 }
 
@@ -906,6 +910,7 @@ void MainWindow::on_openFile_triggered()
         connect(save,SIGNAL(sendStage(vector<StageBase>)),stage,SLOT(getStage(vector<StageBase>)));
         connect(save,SIGNAL(sendStageBoundary(vector<StageBoundaryBase>)),stageBoundary,SLOT(getStageBoundary(vector<StageBoundaryBase>)));
         connect(save,SIGNAL(sendWatchListBase(vector<WatchListBase>)),watch,SLOT(getWatchListBase(vector<WatchListBase>)));
+        connect(save,SIGNAL(sendGeometry(GeometryBase)),geo,SLOT(getGeometryBaseObject(GeometryBase)));
 
         save->sendSIGNAL();
         emit boundary->sendSignal();
@@ -1083,9 +1088,12 @@ void MainWindow::getScaleSetting(ScaleSettingBase scale)
     if(scale.step>U.cols())
     {
         QMessageBox::warning(this,"ERROR","The input step is greater than maximun step");
-        step=1;
+        step=U.cols();
     }
-    step=scale.step;
+    else
+    {
+        step=scale.step;
+    }
     dScale=scale.resultScale;
     xScale=scale.xScale;
     yScale=scale.yScale;
@@ -1241,6 +1249,7 @@ void MainWindow::on_saveAs_triggered()
     connect(boundary,SIGNAL(sendParameters(vector<BoundaryConditionBase>)),save,SLOT(getBoundary(vector<BoundaryConditionBase>)));
     connect(stageBoundary,SIGNAL(sendParametersStageBoundary(vector<StageBoundaryBase>)),save,SLOT(getStageBoundary(vector<StageBoundaryBase>)));
     connect(watch,SIGNAL(sendSignal(vector<WatchListBase>)),save,SLOT(getWatchListBase(vector<WatchListBase>)));
+    connect(geo,SIGNAL(sendGeometryObject(GeometryBase)),save,SLOT(getGeometryBase(GeometryBase)));
     emit this->sendMesh(coordinates,elements,folderName);
 
     project->sendSIGNAL();
@@ -1249,6 +1258,8 @@ void MainWindow::on_saveAs_triggered()
     boundary->sendSignal();
     stageBoundary->sendSIGNAL();
     watch->sendSIGNAL();
+    geo->saveDataToObject();
+
     save->resetFolderName();
     save->saveModel();
 }

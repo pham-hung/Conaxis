@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
-    <height>224</height>
+    <width>415</width>
+    <height>232</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>180</y>
-     <width>291</width>
+     <x>10</x>
+     <y>200</y>
+     <width>401</width>
      <height>31</height>
     </rect>
    </property>
@@ -26,7 +26,14 @@
     <item>
      <widget class="QPushButton" name="okButton">
       <property name="text">
-       <string>Add</string>
+       <string>Add/Modify</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="delButton">
+      <property name="text">
+       <string>Delete</string>
       </property>
      </widget>
     </item>
@@ -52,7 +59,7 @@
      <x>10</x>
      <y>10</y>
      <width>405</width>
-     <height>160</height>
+     <height>183</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -76,6 +83,13 @@
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Results Type</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Average results</string>
         </property>
        </widget>
       </item>
@@ -162,6 +176,16 @@
           <string>Element Solution - Total Stress - Sxy</string>
          </property>
         </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="averageCheck">
+        <property name="text">
+         <string>Yes</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>

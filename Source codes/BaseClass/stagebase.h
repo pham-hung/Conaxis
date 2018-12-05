@@ -22,7 +22,7 @@ public:
     int gravityLoad;
     int timeStepType;
     QString fileName;
-    MatrixXd timeStep;
+    MatrixXd timeStep=MatrixXd::Zero(1,1);
 };
 
 #endif // STAGEBASE_H
